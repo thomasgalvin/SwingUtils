@@ -184,6 +184,15 @@ public class Editor
         return DocumentUtils.getLineCount( getDocument() );
     }
 
+    @Override
+    public int getSelectionEnd() {
+       int result = super.getSelectionEnd();
+       if( result >= getDocument().getLength() ){
+           result = getDocument().getLength();
+       }
+       return result;
+    }
+    
     public int getLineStartOffset( int line ) {
         return DocumentUtils.getLineStartOffset( getDocument(), line );
     }

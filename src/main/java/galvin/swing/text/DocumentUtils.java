@@ -156,6 +156,9 @@ public class DocumentUtils
         else
         {
             int result = lineElement.getEndOffset();
+            if( result > document.getLength() ){
+                result = document.getLength();
+            }
             return result;
         }
     }
