@@ -108,7 +108,17 @@ public class DragAndDropTree
             setSelectionPath( treePath );
         }
     }
-
+    
+    public TreeNode[] getPath( DefaultMutableTreeNode node ){
+        if( node != null ) {
+            DefaultTreeModel model = (DefaultTreeModel) getModel();
+            TreeNode[] treeNodes = model.getPathToRoot( node );
+            return treeNodes;
+        }
+        
+        return new TreeNode[0];
+    }
+    
     public boolean isExpanded( DefaultMutableTreeNode node )
     {
         if( node != null )
