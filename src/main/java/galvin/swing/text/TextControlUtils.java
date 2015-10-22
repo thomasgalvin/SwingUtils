@@ -237,6 +237,26 @@ public class TextControlUtils {
             t.printStackTrace();
         }
     }
+    
+    public static void addToEndOfLine( JTextComponent component, String text ) {
+        try {
+            Document doc = component.getDocument();
+            int caretPosition = component.getCaretPosition();
+
+            int currentLine = DocumentUtils.getLineNumber( doc, caretPosition );
+            int lineEnd = DocumentUtils.getLineEndOffset( doc, currentLine );
+            if( lineEnd > 0 ){
+                lineEnd--;
+            }
+
+            component.setCaretPosition( lineEnd );
+            component.replaceSelection( text );
+            component.setCaretPosition( caretPosition + text.length() );
+        }
+        catch( Throwable t ) {
+            t.printStackTrace();
+        }
+    }
 
     public static void bookendLine( JTextComponent component, String text ) {
         bookendLine( component, text, null );
