@@ -175,6 +175,7 @@ public class MacroEditor
         if( selectedMacro != null )
         {
             model.removeElement( selectedMacro );
+            macros.remove( selectedMacro );
             notifyMacroRemoved( selectedMacro );
             newMacro();
         }
