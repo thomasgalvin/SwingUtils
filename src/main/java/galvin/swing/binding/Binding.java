@@ -1,9 +1,11 @@
 package galvin.swing.binding;
 
+import galvin.StringUtils;
 import java.lang.reflect.Field;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
+import java.util.List;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,43 +14,31 @@ public class Binding
 {
     private static final Logger logger = LoggerFactory.getLogger( Binding.class );
     
-    private final JTextComponent text;
-    private final Document document;
-    private final Object source;
+    private final JComponent component;
+    private final Object object;
     private final String property;
-    private final DocumentListener listener;
     private final Field field;
 
-    public Binding( JTextComponent text, Object source, String property ) 
+    public Binding( JComponent component, Object object, String property ) 
     throws NoSuchFieldException {
-        Class clazz = source.getClass();
-        field = clazz.getField( property );
+        Class clazz = object.getClass();
+        field = clazz.getDeclaredField( property );
         field.setAccessible( true );
         
-        this.text = text;
-        this.source = source;
+        this.component = component;
+        this.object = object;
         this.property = property;
-        
-        document = text.getDocument();
-        
-        listener = new LocalDocumentListener();
-        document.addDocumentListener( listener );
     }
     
-    public void toObject(){
+    public void setObjectValue(){
         
     }
     
-    public void toText(){
+    public void setComponentValue(){
         try {
-            Object value = field.get( text );
-            if( value != null ){
-                document.removeDocumentListener( listener );
-                text.setText( value.toString() );
-                document.addDocumentListener( listener );
-            }
-            else{
-                text.setText( "" );
+            Object value = field.get( object );
+            if( component instanceof JTextComponent ){
+                totextComponent( value );
             }
         }
         catch( IllegalAccessException iae ){
@@ -56,24 +46,32 @@ public class Binding
         }
     }
     
-    public void destroy(){
-        document.removeDocumentListener( listener );
-    }
-    
-    private class LocalDocumentListener implements DocumentListener{
-        @Override
-        public void insertUpdate( DocumentEvent e ) {
-            toObject();
+    private void totextComponent( Object value ){
+        JTextComponent text = (JTextComponent)component;
+        if( value != null ) {
+            boolean multiline = text instanceof JTextArea || text instanceof JEditorPane;
+            
+            if( value instanceof List && multiline ){
+                List list = (List)value;
+                
+                StringBuilder builder = new StringBuilder();
+                for( Object tmp : list ){
+                    builder.append( tmp.toString() );
+                    builder.append( "\n" );
+                }
+                
+                text.setText( builder.toString().trim() );
+            }
+            else if( value instanceof List ){
+                List list = (List)value;
+                text.setText( StringUtils.csv( list ) );
+            }
+            else {
+                text.setText( value.toString() );
+            }
         }
-
-        @Override
-        public void removeUpdate( DocumentEvent e ) {
-            toObject();
-        }
-
-        @Override
-        public void changedUpdate( DocumentEvent e ) {
-            toObject();
+        else {
+            text.setText( "" );
         }
     }
 }
