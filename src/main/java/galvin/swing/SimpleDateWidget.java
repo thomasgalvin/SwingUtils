@@ -8,9 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -21,18 +21,18 @@ public class SimpleDateWidget
 
     private JComboBox monthComboBox = new JComboBox( new String[]
     {
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
+        "January",
+        "February",
+        "March",
+        "April",
         "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
     } );
     private JComboBox daysInMonthComboBox = new JComboBox();
     private SpinnerNumberModel yearModel = new SpinnerNumberModel( 0, 0, 9999, 1 );
@@ -63,16 +63,22 @@ public class SimpleDateWidget
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.weightx = 1.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.anchor = GridBagConstraints.EAST;
         
+        add( new JLabel(), constraints );
+        
+        constraints.gridx++;
+        constraints.weightx = 0;
+        constraints.fill = GridBagConstraints.NONE;
         add( monthComboBox, constraints );
 
         constraints.gridx++;
         add( daysInMonthComboBox, constraints );
 
         constraints.gridx++;
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
+        
         add( yearField, constraints );
 
         setDate( new LocalDate() );
