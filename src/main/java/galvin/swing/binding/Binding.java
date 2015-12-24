@@ -3,6 +3,7 @@ package galvin.swing.binding;
 import galvin.StringUtils;
 import java.lang.reflect.Field;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JTextArea;
@@ -37,8 +38,12 @@ public class Binding
     public void setComponentValue(){
         try {
             Object value = field.get( object );
+            
             if( component instanceof JTextComponent ){
-                totextComponent( value );
+                toTextComponent( value );
+            }
+            else if( component instanceof JComboBox ){
+                toComboBox( value );
             }
         }
         catch( IllegalAccessException iae ){
@@ -46,7 +51,7 @@ public class Binding
         }
     }
     
-    private void totextComponent( Object value ){
+    private void toTextComponent( Object value ){
         JTextComponent text = (JTextComponent)component;
         if( value != null ) {
             boolean multiline = text instanceof JTextArea || text instanceof JEditorPane;
@@ -73,5 +78,10 @@ public class Binding
         else {
             text.setText( "" );
         }
+    }
+    
+    private void toComboBox( Object value ){
+        JComboBox combo = (JComboBox)component;
+        combo.setSelectedItem( value );
     }
 }
