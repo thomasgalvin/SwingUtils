@@ -1,13 +1,18 @@
 package galvin.swing.binding;
 
 import galvin.StringUtils;
+import galvin.swing.SimpleDateWidget;
 import java.lang.reflect.Field;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +49,9 @@ public class Binding
             }
             else if( component instanceof JComboBox ){
                 toComboBox( value );
+            }
+            else if( component instanceof SimpleDateWidget ){
+                toDateWidget( value );
             }
         }
         catch( IllegalAccessException iae ){
@@ -83,5 +91,35 @@ public class Binding
     private void toComboBox( Object value ){
         JComboBox combo = (JComboBox)component;
         combo.setSelectedItem( value );
+    }
+    
+    private void toDateWidget( Object value ){
+        SimpleDateWidget dateWidget = (SimpleDateWidget)component;
+        if( value instanceof LocalDate ) {
+            LocalDate date = (LocalDate)value;
+            dateWidget.setDate( date );
+        }
+        else if( value instanceof LocalDateTime ) {
+            LocalDateTime date = (LocalDateTime)value;
+            dateWidget.setDateTime( date );
+        }
+        else if( value instanceof Date ){
+            Date date = (Date)value;
+            LocalDate local = new LocalDate( date.getTime() );
+            dateWidget.setDate( local );
+        }
+        else if( value instanceof Calendar ){
+            Calendar calendar = (Calendar)value;
+            LocalDateTime local = new LocalDateTime( calendar.getTimeInMillis() );
+            dateWidget.setDateTime( local );
+        }
+        else if( value instanceof Long ){
+            Long time = (Long)value;
+            LocalDateTime local = new LocalDateTime( time );
+            dateWidget.setDateTime( local );
+        }
+        else {
+            dateWidget.epoc();
+        }
     }
 }

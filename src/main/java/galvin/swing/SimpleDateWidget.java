@@ -118,6 +118,14 @@ public class SimpleDateWidget
         }
     }
     
+    public void now(){
+        setDate( new LocalDate() );
+    }
+    
+    public void epoc(){
+        setDate( new LocalDate( 1970, 1, 1 ) );
+    }
+    
     @Override
     public void setToolTipText( String text )
     {
