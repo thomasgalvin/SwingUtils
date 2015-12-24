@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -33,7 +35,8 @@ public class SimpleDateWidget
         "Dec"
     } );
     private JComboBox daysInMonthComboBox = new JComboBox();
-    private JTextField yearField = new JTextField( 4 );
+    private SpinnerNumberModel yearModel = new SpinnerNumberModel( 0, 0, 9999, 1 );
+    private JSpinner yearField = new JSpinner( yearModel );
 
     private static final int[] DAYS_IN_MONTH = new int[]
     {
@@ -54,12 +57,14 @@ public class SimpleDateWidget
     public SimpleDateWidget()
     {
         super( new GridBagLayout() );
-
+        
+        yearField.setEditor(new JSpinner.NumberEditor(yearField,"#"));
+        
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.EAST;
-
+        
         add( monthComboBox, constraints );
 
         constraints.gridx++;
@@ -76,7 +81,10 @@ public class SimpleDateWidget
 
     public LocalDate getDate()
     {
-        LocalDate result = new LocalDate( Integer.parseInt( yearField.getText() ),
+        Number num = yearModel.getNumber();
+        int year = num == null ? 0 : num.intValue();
+        
+        LocalDate result = new LocalDate( year,
                                           monthComboBox.getSelectedIndex() + 1,
                                           daysInMonthComboBox.getSelectedIndex() + 1 );
         return result;
@@ -84,7 +92,10 @@ public class SimpleDateWidget
 
     public LocalDateTime getDateTime()
     {
-        LocalDateTime result = new LocalDateTime( Integer.parseInt( yearField.getText() ),
+        Number num = yearModel.getNumber();
+        int year = num == null ? 0 : num.intValue();
+        
+        LocalDateTime result = new LocalDateTime( year,
                                                   monthComboBox.getSelectedIndex() + 1,
                                                   daysInMonthComboBox.getSelectedIndex() + 1,
                                                   0, 0, 0 );
@@ -95,7 +106,7 @@ public class SimpleDateWidget
     {
         if( date != null )
         {
-            yearField.setText( date.getYear() + "" );
+            yearModel.setValue( date.getYear() );
             monthComboBox.setSelectedItem( date.getMonthOfYear() - 1 );
             setupDays();
             daysInMonthComboBox.setSelectedIndex( date.getDayOfMonth() - 1 );
