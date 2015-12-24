@@ -3,6 +3,7 @@ package galvin.swing.binding;
 import galvin.StringUtils;
 import galvin.swing.SimpleDateWidget;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +53,9 @@ public class Binding
             }
             else if( component instanceof SimpleDateWidget ){
                 toDateWidget( value );
+            }
+            else {
+                toGenericSetValue( value );
             }
         }
         catch( IllegalAccessException iae ){
@@ -120,6 +124,32 @@ public class Binding
         }
         else {
             dateWidget.epoc();
+        }
+    }
+    
+    private void toGenericSetValue( Object value ){
+        try{
+            Class clazz = component.getClass();
+            
+            Field[] fields = clazz.getDeclaredFields();
+            for( Field componentField : fields ){
+                if( componentField.getName().equals( "value" ) ){
+                    componentField.setAccessible( true );
+                    componentField.set( component, value );
+                    return;
+                }
+            }
+            
+            Method[] methods = clazz.getDeclaredMethods();
+            for( Method method : methods ){
+                if( method.getName().equals( "setValue" ) && method.getParameterCount() == 1){
+                    method.setAccessible( true );
+                    method.invoke( component, value );
+                }
+            }
+        }
+        catch( Throwable t){
+            logger.error( "Error setting value", t );
         }
     }
 }
