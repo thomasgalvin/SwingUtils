@@ -3,14 +3,19 @@ package galvin.swing.spell;
 import com.swabunga.spell.engine.SpellDictionary;
 import com.swabunga.spell.engine.SpellDictionaryHashMap;
 import galvin.SystemUtils;
+import galvin.swing.editor.Editor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.swing.text.JTextComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SpellUtils
 {
-
+    private static final Logger logger = LoggerFactory.getLogger( SpellUtils.class );
+    
     public static final String BASE_DICTIONARY = "spell/eng_com.dic";
     public static final String[] AMERICA_ENGLISH_DICTIONARIES = new String[]
     {
@@ -134,5 +139,23 @@ public class SpellUtils
             file.createNewFile();
         }
         return file;
+    }
+    
+    public static void setUpSpelling( JTextComponent text,
+                                      SpellDictionaryUser projectDict ){
+        try {
+            new SpellingPopupMenu( text, 
+                                   SpellUtils.getCustomDictionary(), 
+                                   projectDict );
+
+            SpellingHighlighter highlighter = new SpellingHighlighter( text );
+            if( text instanceof Editor ){
+                Editor editor = (Editor)text;
+                editor.setSpellingHighlighter( highlighter );
+            }
+        }
+        catch( IOException ioe ){
+            logger.error( "Error loading spell utils", ioe );
+        }
     }
 }
