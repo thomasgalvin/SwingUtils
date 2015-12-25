@@ -62,9 +62,13 @@ public class SpellUtils
         {
             ClassLoader classloader = result.getClass().getClassLoader();
             InputStream stream = classloader.getResourceAsStream( dictionaryName );
-            InputStreamReader reader = new InputStreamReader( stream );
-            result.addDictionary( reader );
-            reader.close();
+            if( stream != null ){
+                InputStreamReader reader = new InputStreamReader( stream );
+                result.addDictionary( reader );
+                reader.close();
+            } else {
+                System.out.println( "Spell Utils: could not read: " + dictionaryName );
+            }
         }
         
         for( File dict : UNIX_SYSTEM_DICTIONARIES ){
