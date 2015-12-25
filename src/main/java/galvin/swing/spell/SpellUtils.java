@@ -4,6 +4,7 @@ import com.swabunga.spell.engine.SpellDictionary;
 import com.swabunga.spell.engine.SpellDictionaryHashMap;
 import galvin.SystemUtils;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +21,8 @@ public class SpellUtils
     {
         BASE_DICTIONARY, "spell/colour.dic", "spell/labelled.dic", "spell/centre.dic", "spell/ise.dic", "spell/yse.dic"
     };
+    public static final File MAC_SYSTEM_DICTIONARY = new File( "/usr/share/dict/words" );
+    
     public static final String CUSTOM_DICTIONARY_FOLDER = "Dictionaries";
     public static final String CUSTOM_DICTIONARY_FILE = "customJazzyDictionary.dic";
     private static SpellDictionary americanDictionary;
@@ -60,6 +63,10 @@ public class SpellUtils
             InputStreamReader reader = new InputStreamReader( stream );
             result.addDictionary( reader );
             reader.close();
+        }
+        
+        if( SystemUtils.IS_MAC ){
+            result.addDictionary( MAC_SYSTEM_DICTIONARY );
         }
 
         return result;
