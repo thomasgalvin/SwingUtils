@@ -369,7 +369,7 @@ public class Editor
             super.paint( g2 );
         }
         catch( Throwable t ) {
-            t.printStackTrace();
+            System.out.println( "Error in paint() method." );
         }
     }
 
