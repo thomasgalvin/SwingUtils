@@ -6,9 +6,12 @@ package galvin.swing.text.macros;
 import galvin.swing.ApplicationWindow;
 import galvin.swing.GuiUtils;
 import galvin.StringUtils;
+import galvin.swing.spell.SpellDictionaryUser;
+import galvin.swing.spell.SpellUtils;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -61,7 +64,11 @@ public class MacroEditor
     private Macro selectedMacro;
     private boolean listenToSelections = true;
 
-    public MacroEditor()
+    public MacroEditor(){
+        this( null );
+    }
+    
+    public MacroEditor( SpellDictionaryUser dictionary )
     {
         setLayout( null );
         add( listScrollPane );
@@ -74,6 +81,9 @@ public class MacroEditor
         add( removeButton );
         add( doneButton );
         add( applyButton );
+        
+        SpellUtils.setUpSpelling( beforeCursorArea, dictionary );
+        SpellUtils.setUpSpelling( afterCursorArea, dictionary );
 
         list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         setPreferredSize( new Dimension( 700, 500 ) );
