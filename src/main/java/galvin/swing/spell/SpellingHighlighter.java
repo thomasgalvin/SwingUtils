@@ -27,6 +27,11 @@ public class SpellingHighlighter
         this( textComponent, textComponent.getDocument(), projectDictionary );
     }
 
+    public SpellingHighlighter( JTextComponent textComponent, Document document )
+    {
+        this( textComponent, document, null );
+    }
+    
     public SpellingHighlighter( JTextComponent textComponent, Document document, SpellDictionaryUser projectDictionary )
     {
         this.projectDictionary = projectDictionary;
