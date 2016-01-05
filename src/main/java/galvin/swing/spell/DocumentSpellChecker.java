@@ -37,6 +37,11 @@ public class DocumentSpellChecker
     {
         this( document, SpellUtils.getAmericanDictionary(), SpellUtils.getCustomDictionary(), null );
     }
+    
+    public DocumentSpellChecker( Document document,  SpellDictionaryUser projectDictionary ) throws IOException
+    {
+        this( document, SpellUtils.getAmericanDictionary(), SpellUtils.getCustomDictionary(), projectDictionary );
+    }
 
     public DocumentSpellChecker( Document document, SpellDictionary dictionary, SpellDictionaryUser userDictionary, SpellDictionaryUser projectDictionary )
     {

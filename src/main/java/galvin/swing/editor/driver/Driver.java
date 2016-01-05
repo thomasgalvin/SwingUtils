@@ -19,7 +19,7 @@ public class Driver
             Document document = editorPane.getDocument();
             
             DocumentSpellChecker listener = new DocumentSpellChecker( document );
-            SpellingHighlighter spellingHighlighter = new SpellingHighlighter( editorPane, document );
+            SpellingHighlighter spellingHighlighter = new SpellingHighlighter( editorPane, document, null );
             SpellingPopupMenu spellingPopupMenu = new SpellingPopupMenu( editorPane );
             editorPane.setSpellingHighlighter( spellingHighlighter );
             

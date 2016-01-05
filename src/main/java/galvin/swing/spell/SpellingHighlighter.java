@@ -15,18 +15,21 @@ public class SpellingHighlighter
     private JTextComponent textComponent;
     private Document document;
     private MisspellingPainter highlightPainter = new MisspellingPainter();
+    private SpellDictionaryUser projectDictionary;
+    
 
     public SpellingHighlighter()
     {
     }
 
-    public SpellingHighlighter( JTextComponent textComponent )
+    public SpellingHighlighter( JTextComponent textComponent, SpellDictionaryUser projectDictionary )
     {
-        this( textComponent, textComponent.getDocument() );
+        this( textComponent, textComponent.getDocument(), projectDictionary );
     }
 
-    public SpellingHighlighter( JTextComponent textComponent, Document document )
+    public SpellingHighlighter( JTextComponent textComponent, Document document, SpellDictionaryUser projectDictionary )
     {
+        this.projectDictionary = projectDictionary;
         setTextComponent( textComponent );
     }
 
@@ -76,7 +79,7 @@ public class SpellingHighlighter
         {
             try
             {
-                DocumentSpellChecker documentSpellChecker = new DocumentSpellChecker( document );
+                DocumentSpellChecker documentSpellChecker = new DocumentSpellChecker( document, projectDictionary );
                 document.putProperty( DocumentSpellChecker.PROPERTY_DOCUMENT_SPELL_CHECKER, documentSpellChecker );
                 documentSpellChecker.addListener( this );
                 documentSpellChecker.notifyListeners();

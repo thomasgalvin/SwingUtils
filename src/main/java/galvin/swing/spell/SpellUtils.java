@@ -148,7 +148,7 @@ public class SpellUtils
                                    SpellUtils.getCustomDictionary(), 
                                    projectDict );
 
-            SpellingHighlighter highlighter = new SpellingHighlighter( text );
+            SpellingHighlighter highlighter = new SpellingHighlighter( text, projectDict );
             if( text instanceof Editor ){
                 Editor editor = (Editor)text;
                 editor.setSpellingHighlighter( highlighter );

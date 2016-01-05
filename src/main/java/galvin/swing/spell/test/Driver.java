@@ -23,7 +23,7 @@ public class Driver
             System.out.println( "3" );
             DocumentSpellChecker listener = new DocumentSpellChecker( document );
             System.out.println( "4" );
-            SpellingHighlighter spellingHighlighter = new SpellingHighlighter( editorPane, document );
+            SpellingHighlighter spellingHighlighter = new SpellingHighlighter( editorPane, document, null );
             System.out.println( "5" );
             SpellingPopupMenu spellingPopupMenu = new SpellingPopupMenu( editorPane, SpellUtils.getCustomDictionary(), null );
             System.out.println( "6" );
