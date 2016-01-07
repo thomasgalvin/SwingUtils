@@ -128,6 +128,13 @@ public class Binding
                 field.set( object, list );
             }
         }
+        else {
+            field.set( object, customConversionFromComponent( value ) );
+        }
+    }
+    
+    public Object customConversionFromComponent( Object componentValue ){
+        return componentValue;
     }
     
     private Object fromTextComponent(){
