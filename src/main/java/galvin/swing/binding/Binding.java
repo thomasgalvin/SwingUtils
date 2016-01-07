@@ -4,6 +4,7 @@ import galvin.StringUtils;
 import galvin.swing.SimpleDateWidget;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,152 @@ public class Binding
     }
     
     public void setObjectValue(){
+        try {
+            Object value = null;
+            
+            if( component instanceof JTextComponent ){
+                value = fromTextComponent();
+            }
+            else if( component instanceof JComboBox ){
+                value = fromComboBox();
+            }
+            else if( component instanceof SimpleDateWidget ){
+                value = fromDateWidget();
+            }
+            else {
+                value = fromGenericSetValue();
+            }
+            
+            if( value != null ){
+                Class fieldClass = field.getType();
+                Class valueClass = value.getClass();
+                
+                
+                if( fieldClass.isAssignableFrom( valueClass) ){
+                    field.set( object, value );
+                } 
+                else {
+                    logger.info( "*" );
+                    logger.info( "*" );
+                    logger.info( "*" );
+                    logger.info( "Conversion needed" );
+                    logger.info( "field class: " + fieldClass.getCanonicalName() );
+                    logger.info( "value class: " + valueClass.getCanonicalName() );
+                    convertAndSet( value, fieldClass, valueClass );
+                }
+            }
+            else{
+                field.set( object, value );
+            }
+        }
+        catch( IllegalAccessException iae ){
+            logger.error( "Error accessing field: " + field.getName(), iae );
+        }
+    }
+    
+    private void convertAndSet( Object value, Class fieldClass, Class valueClass ) throws IllegalAccessException {
+        if( valueClass.getCanonicalName().equals( "org.joda.time.LocalDateTime" ) ){
+            if( fieldClass.getCanonicalName().equals( "long" ) ){
+                LocalDateTime date = (LocalDateTime)value;
+                long val = date.toDate().getTime();
+                field.set( object, val );
+            }
+        }
+        else if( valueClass.getCanonicalName().equals( "org.joda.time.LocalDate" ) ){
+            if( fieldClass.getCanonicalName().equals( "long" ) ){
+                LocalDate date = (LocalDate)value;
+                long val = date.toDate().getTime();
+                field.set( object, val );
+            }
+        }
+        else if( valueClass.getCanonicalName().equals( "java.util.Date" ) ){
+            if( fieldClass.getCanonicalName().equals( "long" ) ){
+                Date date = (Date)value;
+                long val = date.getTime();
+                field.set( object, val );
+            }
+        }
+        else if( valueClass.isAssignableFrom( Calendar.class ) ){
+            if( fieldClass.getCanonicalName().equals( "long" ) ){
+                Calendar date = (Calendar)value;
+                long val = date.getTimeInMillis();
+                field.set( object, val );
+            }
+        }
+        else if( valueClass.getCanonicalName().equals( "java.lang.String" ) ){
+            if( fieldClass.isAssignableFrom( List.class ) ){
+                logger.info( "setting string from list" );
+                
+                JTextComponent text = (JTextComponent)component;
+                boolean multiline = text instanceof JTextArea || text instanceof JEditorPane;
+                
+                String stringVal = (String)value;
+                String[] tokens = null;
+                
+                if( multiline ){
+                    tokens = stringVal.split( "\n" );
+                }
+                else {
+                    tokens = stringVal.split( "," );
+                }
+                
+                List list = new ArrayList();
+                for( String string : tokens ){
+                    list.add(  string.trim() );
+                }
+                logger.info( list.toString() );
+                field.set( object, list );
+            }
+        }
+    }
+    
+    private Object fromTextComponent(){
+        JTextComponent text = (JTextComponent)component;
+        String value = text.getText();
+        return value;
+    }
+    
+    private Object fromComboBox(){
+        JComboBox combo = (JComboBox)component;
+        Object value = combo.getSelectedItem();
+        return value;
+    }
+    
+    private Object fromDateWidget(){
+        SimpleDateWidget dateWidget = (SimpleDateWidget)component;
+        LocalDateTime value = dateWidget.getDateTime();
+        return value;
+    }
+    
+    private Object fromGenericSetValue(){
+        Object value = null;
         
+        try{
+            Class clazz = component.getClass();
+            
+            Field[] fields = clazz.getDeclaredFields();
+            for( Field componentField : fields ){
+                if( componentField.getName().equals( "value" ) ){
+                    componentField.setAccessible( true );
+                    value = componentField.get( component );
+                }
+            }
+            
+            if( value == null ){
+                Method[] methods = clazz.getDeclaredMethods();
+                for( Method method : methods ){
+                    if( method.getName().equals( "getValue" ) && method.getParameterCount() == 1){
+                        method.setAccessible( true );
+                        value = method.invoke( component );
+                    }
+                }
+            }
+        }
+        catch( Throwable t){
+            logger.error( "Error setting value", t );
+        }
+        
+        return value;
     }
     
     public void setComponentValue(){
