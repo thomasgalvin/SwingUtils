@@ -64,12 +64,6 @@ public class Binding
                     field.set( object, value );
                 } 
                 else {
-                    logger.info( "*" );
-                    logger.info( "*" );
-                    logger.info( "*" );
-                    logger.info( "Conversion needed" );
-                    logger.info( "field class: " + fieldClass.getCanonicalName() );
-                    logger.info( "value class: " + valueClass.getCanonicalName() );
                     convertAndSet( value, fieldClass, valueClass );
                 }
             }
@@ -113,8 +107,6 @@ public class Binding
         }
         else if( valueClass.getCanonicalName().equals( "java.lang.String" ) ){
             if( fieldClass.isAssignableFrom( List.class ) ){
-                logger.info( "setting string from list" );
-                
                 JTextComponent text = (JTextComponent)component;
                 boolean multiline = text instanceof JTextArea || text instanceof JEditorPane;
                 
@@ -132,7 +124,7 @@ public class Binding
                 for( String string : tokens ){
                     list.add(  string.trim() );
                 }
-                logger.info( list.toString() );
+                
                 field.set( object, list );
             }
         }
