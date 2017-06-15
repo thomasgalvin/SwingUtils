@@ -213,63 +213,91 @@ public class DocumentSearch
         }
     }
 
-    public static void replaceAllPlain( Document document,
-                                        String originalText,
-                                        String replacementText )
+    public static int replaceAllPlain( Document document,
+                                       String originalText,
+                                       String replacementText )
     {
-        replaceAllPlain( document, originalText, replacementText, false );
+        return replaceAllPlain( document, originalText, replacementText, false );
     }
 
-    public static void replaceAllPlain( List<Document> documents,
-                                        String originalText,
-                                        String replacementText )
+    public static ReplacementCount replaceAllPlain( List<Document> documents,
+                                                    String originalText,
+                                                    String replacementText )
     {
+        int totalCount = 0;
+        int documentCount = 0;
+        
         for(Document document : documents)
         {
-            replaceAllPlain( document, originalText, replacementText );
+            int count = replaceAllPlain( document, originalText, replacementText );
+            if( count > -0 ){
+                documentCount++;
+                totalCount += count;
+            }
         }
+        
+        return new ReplacementCount(totalCount, documentCount);
     }
 
-    public static void replaceAllPlain( Document document,
-                                        String originalText,
-                                        String replacementText,
-                                        boolean ignoreCase )
+    public static int replaceAllPlain( Document document,
+                                       String originalText,
+                                       String replacementText,
+                                       boolean ignoreCase )
     {
-        replaceAllPlain( document, originalText, replacementText, ignoreCase, 0 );
+        return replaceAllPlain( document, originalText, replacementText, ignoreCase, 0 );
     }
 
-    public static void replaceAllPlain( List<Document> documents,
-                                        String originalText,
-                                        String replacementText,
-                                        boolean ignoreCase )
+    public static ReplacementCount replaceAllPlain( List<Document> documents,
+                                                    String originalText,
+                                                    String replacementText,
+                                                    boolean ignoreCase )
     {
+        int totalCount = 0;
+        int documentCount = 0;
+        
         for(Document document : documents)
         {
-            replaceAllPlain( document, originalText, replacementText, ignoreCase );
+            int count = replaceAllPlain( document, originalText, replacementText, ignoreCase );
+            if( count > -0 ){
+                documentCount++;
+                totalCount += count;
+            }
         }
+        
+        return new ReplacementCount(totalCount, documentCount);
     }
 
-    public static void replaceAllPlain( Document document,
-                                        String originalText,
-                                        String replacementText,
-                                        boolean ignoreCase,
-                                        int index )
+    public static int replaceAllPlain( Document document,
+                                       String originalText,
+                                       String replacementText,
+                                       boolean ignoreCase,
+                                       int index )
     {
         StringBuilder text = new StringBuilder( DocumentUtils.getText( document ) );
-        StringUtils.replaceAll( text, originalText, replacementText, ignoreCase );
+        int count = StringUtils.replaceAll( text, originalText, replacementText, ignoreCase );
         DocumentUtils.setText( document,
                                text.toString() );
+        return count;
     }
 
-    public static void replaceAllPlain( List<Document> documents,
-                                        String originalText,
-                                        String replacementText,
-                                        boolean ignoreCase,
-                                        int index )
+    public static ReplacementCount replaceAllPlain( List<Document> documents,
+                                                    String originalText,
+                                                    String replacementText,
+                                                    boolean ignoreCase,
+                                                    int index )
     {
+        int totalCount = 0;
+        int documentCount = 0;
+        
         for(Document document : documents)
         {
-            replaceAllPlain( document, originalText, replacementText, ignoreCase, index );
+            int count = replaceAllPlain( document, originalText, replacementText, ignoreCase, index );
+            if( count > -0 ){
+                documentCount++;
+                totalCount += count;
+            }
         }
+        
+        return new ReplacementCount(totalCount, documentCount);
     }
 }
