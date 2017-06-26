@@ -178,6 +178,11 @@ public class MacroEditor
     {
         editMacro( new Macro() );
     }
+    
+    public void newMacro(String abb, String beforeCursor, String afterCursor)
+    {
+        editMacro( new Macro(abb, beforeCursor, afterCursor ) );
+    }
 
     public void removeMacro()
     {
